@@ -1,0 +1,35 @@
+<!-- <script src="./src/index.js"></script> -->
+
+<script>
+// 模拟exports对象
+
+var exports = {}
+(function (exports, code) {
+    eval(code)
+})(exports, 'exports.default = function(a,b){return a + b}')
+
+
+// 模拟require
+// 这就是bundle.js
+
+(function (list) {
+    function require(file) {
+        var exports = {};
+
+        (function (exports, code) {
+            eval(code);
+        })(exports, list[file]);
+
+        return exports;
+    }
+    require("index.js");
+})(
+    {
+        "index.js": `
+        var add = require('add.js').default
+        console.log(add(1 , 2))
+        `,
+        "add.js": `exports.default = function(a,b){return a + b}`,
+    }
+);
+</script>
